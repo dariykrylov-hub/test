@@ -651,18 +651,26 @@ document.addEventListener('keydown', e => {
   if (e.key === 'Escape')     { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
 });
 
-/* ── GALLERY BUILDER ── */
+/* GALLERY BUILDER — auto-tries jpg, jpeg, png, webp */
 function buildGallery(id, prefix, max) {
   const strip  = document.getElementById('g' + id);
   const dotsEl = document.getElementById('d' + id);
   if (!strip) return;
 
   const loadedSrcs = [];
-  let   itemCount  = 0;
   const items      = [];
+  const EXTS = ['jpg', 'jpeg', 'png', 'webp'];
+
+  function tryLoad(img, base, extIdx, onOk, onFail) {
+    if (extIdx >= EXTS.length) { onFail(); return; }
+    const src = base + '.' + EXTS[extIdx];
+    img.onload  = () => onOk(src);
+    img.onerror = () => tryLoad(img, base, extIdx + 1, onOk, onFail);
+    img.src = src;
+  }
 
   for (let i = 1; i <= max; i++) {
-    const src  = prefix + '-' + i + '.jpg';
+    const base = prefix + '-' + i;
     const wrap = document.createElement('div');
     wrap.className = 'gallery-item';
 
@@ -671,29 +679,27 @@ function buildGallery(id, prefix, max) {
     wrap.appendChild(sk);
 
     const img = document.createElement('img');
-    img.alt     = '';
-    img.loading = i <= 4 ? 'eager' : 'lazy';
+    img.alt      = '';
+    img.loading  = i <= 4 ? 'eager' : 'lazy';
     img.decoding = 'async';
 
-    img.onload = () => {
-      img.classList.add('loaded');
-      wrap.classList.add('done');
-      loadedSrcs.push(src);
-      // add dot
-      const dot = document.createElement('div');
-      dot.className = 'dot';
-      dotsEl.appendChild(dot);
-      updateActiveDot();
-    };
+    tryLoad(img, base, 0,
+      (resolvedSrc) => {
+        img.classList.add('loaded');
+        wrap.classList.add('done');
+        loadedSrcs.push(resolvedSrc);
+        const dot = document.createElement('div');
+        dot.className = 'dot';
+        dotsEl.appendChild(dot);
+        img.addEventListener('click', () => {
+          const idx = loadedSrcs.indexOf(resolvedSrc);
+          if (idx >= 0) openLightbox([...loadedSrcs], idx);
+        });
+        updateActiveDot();
+      },
+      () => { wrap.remove(); }
+    );
 
-    img.onerror = () => { wrap.remove(); };
-
-    img.addEventListener('click', () => {
-      const idx = loadedSrcs.indexOf(src);
-      if (idx >= 0) openLightbox([...loadedSrcs], idx);
-    });
-
-    img.src = src;
     wrap.appendChild(img);
     strip.appendChild(wrap);
     items.push(wrap);
