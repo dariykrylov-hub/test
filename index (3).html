@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Creative Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+
+:root {
+  --bg:       #FFFFFF;
+  --bg2:      #F7F6F4;
+  --border:   #E9E7E4;
+  --text:     #1C1C1C;
+  --muted:    #888480;
+  --light:    #BFBCB8;
+  --accent:   #2C6E6A;   /* тихий смарагдовий */
+  --accent2:  #C4714F;   /* теракотовий для деталей */
+}
+
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 500;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+  height: 56px;
+}
+
+.nav-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 18px;
+  color: var(--text);
+  text-decoration: none;
+  letter-spacing: 0.01em;
+}
+
+.nav-links {
+  display: none;
+  list-style: none;
+  gap: 32px;
+}
+
+.nav-links a {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color .2s;
+}
+.nav-links a:hover { color: var(--text); }
+
+/* Mobile menu button */
+.burger {
+  display: flex; flex-direction: column; justify-content: center;
+  gap: 5px; width: 32px; height: 32px;
+  background: none; border: none; cursor: pointer; padding: 4px;
+}
+.burger span {
+  display: block; height: 1.5px; background: var(--text);
+  transition: transform .3s, opacity .3s, width .3s;
+  transform-origin: center;
+}
+.burger span:nth-child(2) { width: 65%; }
+.burger.open span:nth-child(1) { transform: rotate(45deg) translate(5px, 5px); }
+.burger.open span:nth-child(2) { opacity: 0; }
+.burger.open span:nth-child(3) { transform: rotate(-45deg) translate(5px, -5px); }
+
+/* ── MOBILE MENU ── */
+.mobile-menu {
+  display: none;
+  position: fixed; inset: 56px 0 0;
+  background: var(--bg);
+  z-index: 400;
+  padding: 20px;
+  border-top: 1px solid var(--border);
+}
+.mobile-menu.open { display: block; }
+.mobile-menu a {
+  display: block;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 22px;
+  font-family: 'DM Serif Display', serif;
+  color: var(--text);
+  text-decoration: none;
+}
+.mobile-menu a:last-child { border-bottom: none; }
+
+/* ── HERO ── */
+.hero {
+  padding: 48px 20px 40px;
+  border-bottom: 1px solid var(--border);
+}
+
+.hero-tag {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+.hero-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(38px, 10vw, 64px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+  color: var(--text);
+}
+
+.hero-title em { font-style: italic; color: var(--muted); }
+
+.hero-desc {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.75;
+  max-width: 400px;
+}
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  display: flex; align-items: center; gap: 12px;
+  padding: 32px 20px 20px;
+}
+.sec-label-num {
+  font-size: 11px; font-weight: 600;
+  color: var(--accent2);
+  letter-spacing: 0.1em;
+}
+.sec-label-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(22px, 6vw, 30px);
+  color: var(--text);
+  letter-spacing: -0.01em;
+}
+.sec-label-title em { font-style: italic; }
+.sec-label-line { flex: 1; height: 1px; background: var(--border); }
+
+/* ── GALLERY ── */
+.gallery {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 20px 12px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.gallery::-webkit-scrollbar { display: none; }
+
+.gallery-item {
+  flex-shrink: 0;
+  scroll-snap-align: start;
+  border-radius: 8px;
+  overflow: hidden;
+  background: var(--bg2);
+  width: 68vw;
+  max-width: 300px;
+  aspect-ratio: 3/4;
+  position: relative;
+  cursor: zoom-in;
+}
+.gallery-item:first-child { width: 76vw; max-width: 340px; }
+
+.gallery-item img {
+  width: 100%; height: 100%;
+  object-fit: cover; display: block;
+  opacity: 0;
+  transition: opacity .35s ease;
+}
+.gallery-item img.loaded { opacity: 1; }
+
+/* skeleton */
+.gallery-item .sk {
+  position: absolute; inset: 0; border-radius: 8px;
+  background: linear-gradient(90deg, var(--bg2) 25%, var(--border) 50%, var(--bg2) 75%);
+  background-size: 200% 100%;
+  animation: sk 1.4s ease infinite;
+  transition: opacity .3s;
+}
+.gallery-item.done .sk { opacity: 0; }
+
+/* ── GALLERY DOTS ── */
+.gallery-dots {
+  display: flex; align-items: center; gap: 5px;
+  padding: 10px 20px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.gallery-dots::-webkit-scrollbar { display: none; }
+.dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--border); flex-shrink: 0;
+  transition: background .25s, transform .25s;
+}
+.dot.active { background: var(--accent); transform: scale(1.3); }
+
+/* ── SEC DESC ── */
+.sec-desc {
+  padding: 14px 20px 0;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.75;
+}
+
+/* ── SECTION SEPARATOR ── */
+.sep {
+  margin: 36px 20px 0;
+  border: none; border-top: 1px solid var(--border);
+}
+
+/* ── LIGHTBOX ── */
+.lightbox {
+  display: none;
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.92);
+  align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.lightbox.open { display: flex; }
+
+.lb-img {
+  max-width: 92vw;
+  max-height: 85svh;
+  object-fit: contain;
+  border-radius: 4px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.lb-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,0.12);
+  border: none; border-radius: 50%;
+  width: 40px; height: 40px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; font-size: 18px;
+  font-family: sans-serif; line-height: 1;
+}
+
+.lb-nav {
+  display: flex; gap: 12px; margin-top: 16px;
+}
+.lb-btn {
+  background: rgba(255,255,255,0.12);
+  border: none; border-radius: 50%;
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff; font-size: 20px;
+  font-family: sans-serif;
+  transition: background .2s;
+}
+.lb-btn:hover { background: rgba(255,255,255,0.25); }
+.lb-counter {
+  color: rgba(255,255,255,0.5);
+  font-size: 12px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  align-self: center; min-width: 48px; text-align: center;
+}
+
+/* ── ABOUT ── */
+.about {
+  background: var(--bg2);
+  margin-top: 48px;
+  padding: 40px 20px;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+.about-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(26px, 7vw, 38px);
+  line-height: 1.15;
+  margin-bottom: 16px;
+  letter-spacing: -0.01em;
+}
+.about-title em { font-style: italic; color: var(--muted); }
+.about-text {
+  font-size: 14px;
+  color: var(--muted);
+  line-height: 1.8;
+  max-width: 480px;
+}
+.about-text strong { color: var(--text); font-weight: 500; }
+
+/* ── CONTACT ── */
+.contact {
+  padding: 48px 20px 56px;
+}
+.contact-title {
+  font-family: 'DM Serif Display', serif;
+  font-size: clamp(28px, 8vw, 44px);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  margin-bottom: 28px;
+}
+.contact-title em { font-style: italic; }
+
+.contact-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.contact-card {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color .2s, background .2s;
+}
+.contact-card:hover, .contact-card:active {
+  border-color: var(--accent);
+  background: #f0f7f6;
+}
+
+.contact-card-icon {
+  width: 40px; height: 40px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  background: var(--bg2);
+  flex-shrink: 0;
+}
+.contact-card-text { flex: 1; }
+.contact-card-label {
+  font-size: 11px; font-weight: 600;
+  color: var(--muted); letter-spacing: 0.08em;
+  text-transform: uppercase; display: block; margin-bottom: 2px;
+}
+.contact-card-val {
+  font-size: 14px; font-weight: 500; color: var(--text);
+}
+
+.contact-note {
+  margin-top: 20px;
+  font-size: 12px;
+  color: var(--light);
+  text-align: center;
+}
+
+/* ── FOOTER ── */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
+.footer-name { font-family: 'DM Serif Display', serif; font-size: 15px; }
+.footer-copy { font-size: 11px; color: var(--light); }
+
+/* ── ANIMATIONS ── */
+@keyframes sk {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ── TABLET / DESKTOP ── */
+@media (min-width: 600px) {
+  .gallery-item { width: 44vw; max-width: 320px; }
+  .gallery-item:first-child { width: 50vw; max-width: 360px; }
+  .nav { padding: 0 32px; }
+  .hero, .sec-label, .gallery, .gallery-dots, .sec-desc, .sep,
+  .about, .contact, footer { padding-left: 32px; padding-right: 32px; }
+  .sep { margin-left: 32px; margin-right: 32px; }
+}
+
+@media (min-width: 900px) {
+  .burger { display: none; }
+  .nav-links { display: flex; }
+  .nav { padding: 0 48px; }
+  .hero, .sec-label, .gallery, .gallery-dots, .sec-desc,
+  .about, .contact, footer { padding-left: 48px; padding-right: 48px; }
+  .sep { margin-left: 48px; margin-right: 48px; }
+  .gallery-item { width: 28vw; max-width: 360px; }
+  .gallery-item:first-child { width: 32vw; max-width: 400px; }
+  .contact-cards { flex-direction: row; flex-wrap: wrap; }
+  .contact-card { flex: 1; min-width: 220px; }
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <a href="#" class="nav-logo">Creative Studio</a>
+  <ul class="nav-links">
+    <li><a href="#s1">Реклама</a></li>
+    <li><a href="#s2">Запрошення</a></li>
+    <li><a href="#s3">Ілюстрація</a></li>
+    <li><a href="#s4">Принти</a></li>
+    <li><a href="#s5">Фешн дизайн</a></li>
+    <li><a href="#contact">Контакт</a></li>
+  </ul>
+  <button class="burger" id="burgerBtn" aria-label="Меню">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#s1"      onclick="closeMenu()">Рекламні креативи</a>
+  <a href="#s2"      onclick="closeMenu()">Запрошення до свят</a>
+  <a href="#s3"      onclick="closeMenu()">Фешн ілюстрація</a>
+  <a href="#s4"      onclick="closeMenu()">Дизайн принтів</a>
+  <a href="#s5"      onclick="closeMenu()">Фешн дизайн</a>
+  <a href="#contact" onclick="closeMenu()">Зв'язатися</a>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <span class="hero-tag">Freelance · Design Portfolio</span>
+  <h1 class="hero-title">Дизайн,<br>що <em>говорить</em><br>за себе</h1>
+  <p class="hero-desc">Рекламні креативи, фешн ілюстрація, запрошення, принти та дизайн одягу. Відкрита до співпраці та фрілансу.</p>
+</section>
+
+<!-- ════════════════════════════════
+  IMAGES NAMING:
+  1-1.jpg, 1-2.jpg … 1-15.jpg  → секція «Реклама»
+  2-1.jpg, 2-2.jpg … 2-15.jpg  → «Запрошення»
+  3-1.jpg … 3-15.jpg           → «Ілюстрація»
+  4-1.jpg … 4-15.jpg           → «Принти»
+  5-1.jpg … 5-15.jpg           → «Фешн дизайн»
+  Всі файли лежать поруч з index.html
+═════════════════════════════════ -->
+
+<!-- 01 -->
+<section id="s1">
+  <div class="sec-label">
+    <span class="sec-label-num">01</span>
+    <h2 class="sec-label-title">Рекламні <em>Креативи</em></h2>
+    <div class="sec-label-line"></div>
+  </div>
+  <div class="gallery" id="g1" data-prefix="1"></div>
+  <div class="gallery-dots" id="d1"></div>
+  <p class="sec-desc">Банери, сторіс, постери — чіткий меседж, що зупиняє погляд.</p>
+</section>
+
+<hr class="sep">
+
+<!-- 02 -->
+<section id="s2">
+  <div class="sec-label">
+    <span class="sec-label-num">02</span>
+    <h2 class="sec-label-title">Запрошення <em>до Свят</em></h2>
+    <div class="sec-label-line"></div>
+  </div>
+  <div class="gallery" id="g2" data-prefix="2"></div>
+  <div class="gallery-dots" id="d2"></div>
+  <p class="sec-desc">Дні народження, весілля, корпоративи — унікальний стиль під кожну подію.</p>
+</section>
+
+<hr class="sep">
+
+<!-- 03 -->
+<section id="s3">
+  <div class="sec-label">
+    <span class="sec-label-num">03</span>
+    <h2 class="sec-label-title">Фешн <em>Ілюстрація</em></h2>
+    <div class="sec-label-line"></div>
+  </div>
+  <div class="gallery" id="g3" data-prefix="3"></div>
+  <div class="gallery-dots" id="d3"></div>
+  <p class="sec-desc">Авторські ілюстрації для брендів, lookbook-ів і особистих проєктів.</p>
+</section>
+
+<hr class="sep">
+
+<!-- 04 -->
+<section id="s4">
+  <div class="sec-label">
+    <span class="sec-label-num">04</span>
+    <h2 class="sec-label-title">Дизайн <em>Принтів</em></h2>
+    <div class="sec-label-line"></div>
+  </div>
+  <div class="gallery" id="g4" data-prefix="4"></div>
+  <div class="gallery-dots" id="d4"></div>
+  <p class="sec-desc">Патерни і принти для тканин, одягу, аксесуарів — під будь-яке виробництво.</p>
+</section>
+
+<hr class="sep">
+
+<!-- 05 -->
+<section id="s5">
+  <div class="sec-label">
+    <span class="sec-label-num">05</span>
+    <h2 class="sec-label-title">Фешн <em>Дизайн</em></h2>
+    <div class="sec-label-line"></div>
+  </div>
+  <div class="gallery" id="g5" data-prefix="5"></div>
+  <div class="gallery-dots" id="d5"></div>
+  <p class="sec-desc">Ескізи та концепти одягу — від скетчу до технічного малюнку.</p>
+</section>
+
+<!-- ABOUT -->
+<div class="about" id="about">
+  <h2 class="about-title">Відкрита<br>до <em>співпраці</em></h2>
+  <p class="about-text">Беру проєкти будь-якого масштабу — від одного банера до повноцінної колекції. Pracюю <strong>швидко</strong>, тримаю <strong>зворотний зв'язок</strong> і здаю готові файли в термін.</p>
+</div>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <h2 class="contact-title">Зв'яжіться<br><em>зі мною</em></h2>
+  <div class="contact-cards">
+    <a href="mailto:your@email.com" class="contact-card">
+      <div class="contact-card-icon">✉️</div>
+      <div class="contact-card-text">
+        <span class="contact-card-label">Email</span>
+        <span class="contact-card-val">your@email.com</span>
+      </div>
+    </a>
+    <a href="https://t.me/yourusername" class="contact-card" target="_blank">
+      <div class="contact-card-icon">✈️</div>
+      <div class="contact-card-text">
+        <span class="contact-card-label">Telegram</span>
+        <span class="contact-card-val">@yourusername</span>
+      </div>
+    </a>
+    <a href="https://instagram.com/yourusername" class="contact-card" target="_blank">
+      <div class="contact-card-icon">📷</div>
+      <div class="contact-card-text">
+        <span class="contact-card-label">Instagram</span>
+        <span class="contact-card-val">@yourusername</span>
+      </div>
+    </a>
+  </div>
+  <p class="contact-note">Відповідаю протягом доби</p>
+</section>
+
+<footer>
+  <span class="footer-name">Creative Studio</span>
+  <span class="footer-copy">© 2025</span>
+</footer>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <img class="lb-img" id="lbImg" src="" alt="">
+  <div class="lb-nav">
+    <button class="lb-btn" id="lbPrev">‹</button>
+    <span class="lb-counter" id="lbCounter"></span>
+    <button class="lb-btn" id="lbNext">›</button>
+  </div>
+</div>
+
+<script>
+/* ── MENU ── */
+const burgerBtn   = document.getElementById('burgerBtn');
+const mobileMenu  = document.getElementById('mobileMenu');
+
+burgerBtn.addEventListener('click', () => {
+  const open = mobileMenu.classList.toggle('open');
+  burgerBtn.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+});
+
+function closeMenu() {
+  mobileMenu.classList.remove('open');
+  burgerBtn.classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── LIGHTBOX ── */
+let lbImages = [];
+let lbIndex  = 0;
+
+const lightbox  = document.getElementById('lightbox');
+const lbImg     = document.getElementById('lbImg');
+const lbCounter = document.getElementById('lbCounter');
+
+function openLightbox(images, index) {
+  lbImages = images;
+  lbIndex  = index;
+  showLbImage();
+  lightbox.classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function showLbImage() {
+  lbImg.src = lbImages[lbIndex];
+  lbCounter.textContent = (lbIndex + 1) + ' / ' + lbImages.length;
+}
+
+document.getElementById('lbClose').addEventListener('click', () => {
+  lightbox.classList.remove('open');
+  document.body.style.overflow = '';
+});
+
+document.getElementById('lbPrev').addEventListener('click', () => {
+  lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length;
+  showLbImage();
+});
+
+document.getElementById('lbNext').addEventListener('click', () => {
+  lbIndex = (lbIndex + 1) % lbImages.length;
+  showLbImage();
+});
+
+// swipe in lightbox
+let lbStartX = 0;
+lbImg.addEventListener('touchstart', e => { lbStartX = e.touches[0].clientX; }, { passive:true });
+lbImg.addEventListener('touchend',   e => {
+  const dx = e.changedTouches[0].clientX - lbStartX;
+  if (Math.abs(dx) > 40) {
+    if (dx < 0) { lbIndex = (lbIndex + 1) % lbImages.length; }
+    else        { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; }
+    showLbImage();
+  }
+});
+
+// close on backdrop click
+lightbox.addEventListener('click', e => {
+  if (e.target === lightbox) {
+    lightbox.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+});
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if (!lightbox.classList.contains('open')) return;
+  if (e.key === 'ArrowRight') { lbIndex = (lbIndex + 1) % lbImages.length; showLbImage(); }
+  if (e.key === 'ArrowLeft')  { lbIndex = (lbIndex - 1 + lbImages.length) % lbImages.length; showLbImage(); }
+  if (e.key === 'Escape')     { lightbox.classList.remove('open'); document.body.style.overflow = ''; }
+});
+
+/* ── GALLERY BUILDER ── */
+function buildGallery(id, prefix, max) {
+  const strip  = document.getElementById('g' + id);
+  const dotsEl = document.getElementById('d' + id);
+  if (!strip) return;
+
+  const loadedSrcs = [];
+  let   itemCount  = 0;
+  const items      = [];
+
+  for (let i = 1; i <= max; i++) {
+    const src  = prefix + '-' + i + '.jpg';
+    const wrap = document.createElement('div');
+    wrap.className = 'gallery-item';
+
+    const sk = document.createElement('div');
+    sk.className = 'sk';
+    wrap.appendChild(sk);
+
+    const img = document.createElement('img');
+    img.alt     = '';
+    img.loading = i <= 4 ? 'eager' : 'lazy';
+    img.decoding = 'async';
+
+    img.onload = () => {
+      img.classList.add('loaded');
+      wrap.classList.add('done');
+      loadedSrcs.push(src);
+      // add dot
+      const dot = document.createElement('div');
+      dot.className = 'dot';
+      dotsEl.appendChild(dot);
+      updateActiveDot();
+    };
+
+    img.onerror = () => { wrap.remove(); };
+
+    img.addEventListener('click', () => {
+      const idx = loadedSrcs.indexOf(src);
+      if (idx >= 0) openLightbox([...loadedSrcs], idx);
+    });
+
+    img.src = src;
+    wrap.appendChild(img);
+    strip.appendChild(wrap);
+    items.push(wrap);
+  }
+
+  // Dots sync with scroll
+  function updateActiveDot() {
+    const dots = dotsEl.querySelectorAll('.dot');
+    if (!dots.length) return;
+    const scrollX   = strip.scrollLeft;
+    const itemW     = strip.firstElementChild ? strip.firstElementChild.offsetWidth + 10 : 1;
+    const activeIdx = Math.round(scrollX / itemW);
+    dots.forEach((d, i) => d.classList.toggle('active', i === activeIdx));
+  }
+
+  strip.addEventListener('scroll', updateActiveDot, { passive: true });
+  // Set first dot active after images load
+  setTimeout(updateActiveDot, 600);
+}
+
+buildGallery(1, '1', 15);
+buildGallery(2, '2', 15);
+buildGallery(3, '3', 15);
+buildGallery(4, '4', 15);
+buildGallery(5, '5', 15);
+</script>
+</body>
+</html>
